@@ -4,7 +4,11 @@
 #include <math.h>
 #include <string.h>
 
+#define MAX_CARACTERES 100
+
 #define V 4
+
+int metade;
 
 typedef struct {
     int origem, destino, peso;
@@ -167,6 +171,7 @@ void primMST(int graph[V][V], Aresta *listaTodasArestas, Aresta *listaArestasMST
 int main() {
     // contador para iterar sobre algumas listas e raiz que vai retonar a quantidade de vertices do grafo
     int cont = 0, raiz;
+    char linha[MAX_CARACTERES];
     // variavel pra guardar o nome do arquivo
     char nomeArquivo[100]; 
     // verificador que falará se o código continuará em loop
@@ -184,12 +189,26 @@ int main() {
         // ponteiro apontando para o arquivo
         FILE *file = fopen(nomeArquivo, "r");
 
-        
+        // Leia a primeira linha do arquivo
+        fgets(linha, MAX_CARACTERES, file) != NULL;
+        // Remova o caractere de nova linha (se existir)
+
+        // Divida o comprimento da linha por 2
+        int comprimento = strlen(linha);
+        metade = ceil((float)(comprimento / 2));
+
+        // Imprima o resultado
+        printf("A primeira linha tem %d caracteres. A metade é: %d\n", comprimento, metade);
+
+        // Feche o file
+        fclose(file);
 
         if (file == NULL) {
             perror("Erro ao abrir o arquivo");
             return -1;
         }
+
+
 
         int graph[V][V];
 
