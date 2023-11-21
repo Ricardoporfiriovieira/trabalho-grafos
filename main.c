@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <math.h>
+#include <string.h>
 
 #define V 4
 
@@ -173,11 +174,17 @@ int main() {
 
     while (continuar) {
         // recebendo nome do arquivo
-        printf("Digite o nome do arquivo .txt: ");
+        printf("Digite o nome do arquivo sem (.txt): ");
         scanf("%s", nomeArquivo);
+
+        if (strstr(nomeArquivo, ".txt") == NULL) {
+            strcat(nomeArquivo, ".txt");
+        }
 
         // ponteiro apontando para o arquivo
         FILE *file = fopen(nomeArquivo, "r");
+
+        
 
         if (file == NULL) {
             perror("Erro ao abrir o arquivo");
@@ -227,3 +234,5 @@ int main() {
 
     return 0;
 }
+
+
