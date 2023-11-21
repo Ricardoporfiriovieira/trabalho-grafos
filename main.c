@@ -145,25 +145,33 @@ void primMST(int graph[V][V], Aresta *listaTodasArestas, Aresta *listaArestasMST
 }
 
 int main() {
-    int graph[V][V];
     int cont = 0, raiz;
-    FILE *file = fopen("grafo.txt", "r");
+    char nomeArquivo[100];  // Ajuste o tamanho conforme necessário
+    int continuar = 1;
 
-    if (file == NULL) {
-        perror("Erro ao abrir o arquivo");
-        return -1;
-    }
+    while (continuar) {
+        printf("Digite o nome do arquivo .txt: ");
+        scanf("%s", nomeArquivo);
 
-    for (int i = 0; i < V; i++) {
-        for (int j = 0; j < V; j++) {
-            fscanf(file, "%d", &graph[i][j]);
-            cont++;
+        FILE *file = fopen(nomeArquivo, "r");
+
+        if (file == NULL) {
+            perror("Erro ao abrir o arquivo");
+            return -1;
         }
-    }
 
-    raiz = sqrt(cont);
+        int graph[V][V];
 
-    fclose(file);
+        for (int i = 0; i < V; i++) {
+            for (int j = 0; j < V; j++) {
+                fscanf(file, "%d", &graph[i][j]);
+                cont++;
+            }
+        }
+
+        raiz = sqrt(cont);
+
+        fclose(file);
 
     // Aloca espaço para as listas de arestas
     Aresta *listaTodasArestas = (Aresta *)calloc(V * (V - 1) / 2, sizeof(Aresta));
@@ -186,6 +194,10 @@ int main() {
     free(listaTodasArestas);
     free(listaArestasMST);
     free(listaArestasNaoMST);
+
+        printf("Deseja continuar? (1 para sim, 0 para sair): ");
+        scanf("%d", &continuar);
+    }
 
     return 0;
 }
