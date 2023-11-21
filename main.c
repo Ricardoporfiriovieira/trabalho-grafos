@@ -9,6 +9,8 @@ typedef struct {
     int origem, destino, peso;
 } Aresta;
 
+
+// lista de arestas que não estão no MST
 Aresta* arestasNaoMST(Aresta* listaTodasArestas, int tamanhoTodasArestas, Aresta* listaArestasMST, int tamanhoArestasMST, int* tamanhoArestasNaoMST) {
     // Inicializa um ponteiro para armazenar a lista de arestas que não estão na MST
     Aresta* listaArestasNaoMST = NULL;
@@ -34,12 +36,13 @@ Aresta* arestasNaoMST(Aresta* listaTodasArestas, int tamanhoTodasArestas, Aresta
         // Verifica se a aresta está na MST
         for (j = 0; j < tamanhoArestasMST; j++) {
 
+            // adicionando um marcador nas arestas que estão no MST calculado previamente.
             if(listaTodasArestas[i].origem == listaArestasMST[j].destino && listaArestasMST[j].peso == listaTodasArestas[i].peso){
                 estaNaMST = 1;
                 break;  
             }
             
-
+            // adicionando um marcador nas arestas que estão no MST calculado previamente.
             if (listaTodasArestas[i].origem == listaArestasMST[j].origem &&
                 listaTodasArestas[i].destino == listaArestasMST[j].destino &&
                 listaTodasArestas[i].peso == listaArestasMST[j].peso
@@ -75,6 +78,7 @@ void printArestaLista(Aresta *listaArestas, int tamanho, const char *titulo) {
     }
 }
 
+// verifica o vertice com o valor mínimo para adicionar na mst
 int minKey(int key[], int mstSet[]) {
     int min = INT_MAX, min_index;
 
@@ -91,6 +95,7 @@ int minKey(int key[], int mstSet[]) {
 void printMST(int parent[], int graph[V][V], Aresta *listaArestasMST) {
     int arestaCount = 0;
 
+
     for (int i = 1; i < V; i++) {
         listaArestasMST[arestaCount].origem = parent[i];
         listaArestasMST[arestaCount].destino = i;
@@ -101,11 +106,19 @@ void printMST(int parent[], int graph[V][V], Aresta *listaArestasMST) {
     printArestaLista(listaArestasMST, arestaCount, "Arestas na Arvore Geradora Minima:");
 }
 
+
+// essa função aplica o algoritmo de prim e com ele é realizado o mapeamento do mst do código
 void primMST(int graph[V][V], Aresta *listaTodasArestas, Aresta *listaArestasMST) {
+
+    // parent é a lista responsável por mapear os vertices vizinhos
     int parent[V];
+    // key guarda o rotulo do vertice
     int key[V];
+    // mstSet é responsável por mapear os vertices que já foram verificados no código
     int mstSet[V];
 
+
+    // inicializo a minha key com int_max e mstSet. quando int_max for um valor muito grande é pq ninguem foi selecionado ainda, quando mstSet for 0 é pq o vertice ainda não faz parte da mst.
     for (int i = 0; i < V; i++) {
         key[i] = INT_MAX;
         mstSet[i] = 0;
@@ -114,11 +127,15 @@ void primMST(int graph[V][V], Aresta *listaTodasArestas, Aresta *listaArestasMST
     key[0] = 0;
     parent[0] = -1;
 
+    // for para iterar sobre o grafo
     for (int count = 0; count < V - 1; count++) {
+        // minKey busca o menor pe
         int u = minKey(key, mstSet);
         mstSet[u] = 1;
 
+
         for (int v = 0; v < V; v++) {
+            // enquanto vou iterando na MA verifico se mstSet[v] == 0 (o grafo ainda não foi adicionado na MST) e se o peso da aresta é minimo.
             if (graph[u][v] && mstSet[v] == 0 && graph[u][v] < key[v]) {
                 parent[v] = u;
                 key[v] = graph[u][v];
@@ -126,9 +143,10 @@ void primMST(int graph[V][V], Aresta *listaTodasArestas, Aresta *listaArestasMST
         }
     }
 
+    // a função a cima vai selecionar as arestas para formar o MST após isso vou chamar uma função para printa essas arestas.
     printMST(parent, graph, listaArestasMST);
 
-    // Preenche a listaTodasArestas com todas as arestas do grafo
+    // o loop abaixo verifica todas as arestas do código.
     int arestaCount = 0;
     for (int i = 0; i < V; i++) {
         for (int j = i + 1; j < V; j++) {
@@ -141,18 +159,24 @@ void primMST(int graph[V][V], Aresta *listaTodasArestas, Aresta *listaArestasMST
         }
     }
 
+    // função para mostrar todas as arestas do código.
     printArestaLista(listaTodasArestas, arestaCount, "\nTodas as Arestas do Grafo:");
 }
 
 int main() {
+    // contador para iterar sobre algumas listas e raiz que vai retonar a quantidade de vertices do grafo
     int cont = 0, raiz;
-    char nomeArquivo[100];  // Ajuste o tamanho conforme necessário
+    // variavel pra guardar o nome do arquivo
+    char nomeArquivo[100]; 
+    // verificador que falará se o código continuará em loop
     int continuar = 1;
 
     while (continuar) {
+        // recebendo nome do arquivo
         printf("Digite o nome do arquivo .txt: ");
         scanf("%s", nomeArquivo);
 
+        // ponteiro apontando para o arquivo
         FILE *file = fopen(nomeArquivo, "r");
 
         if (file == NULL) {
@@ -162,6 +186,7 @@ int main() {
 
         int graph[V][V];
 
+        // calculando a quantidade de vertices
         for (int i = 0; i < V; i++) {
             for (int j = 0; j < V; j++) {
                 fscanf(file, "%d", &graph[i][j]);
@@ -173,8 +198,9 @@ int main() {
 
         fclose(file);
 
-    // Aloca espaço para as listas de arestas
+    // lista para mapear todas as arestas do grafo
     Aresta *listaTodasArestas = (Aresta *)calloc(V * (V - 1) / 2, sizeof(Aresta));
+    // lista para mapear todas da arvore minima do grafo
     Aresta *listaArestasMST = (Aresta *)calloc(V - 1, sizeof(Aresta));
 
     if (listaTodasArestas == NULL || listaArestasMST == NULL) {
