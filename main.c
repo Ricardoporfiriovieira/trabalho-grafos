@@ -56,10 +56,7 @@ Aresta* arestasNaoMST(Aresta* listaTodasArestas, int tamanhoTodasArestas, Aresta
         }
 
         // Se a aresta não está na MST, adiciona à lista de arestas que não estão na MST
-        if (!estaNaMST && 
-            listaTodasArestas[i].peso != 0 &&
-            listaArestasMST[j].peso != 0) {
-
+        if (!estaNaMST && listaTodasArestas[i].peso != 0) {
             listaArestasNaoMST[contador].origem = listaTodasArestas[i].origem;
             listaArestasNaoMST[contador].destino = listaTodasArestas[i].destino;
             listaArestasNaoMST[contador].peso = listaTodasArestas[i].peso;
