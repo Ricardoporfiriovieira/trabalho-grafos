@@ -4,7 +4,9 @@
 #include <math.h>
 #include <string.h>
 
-#define V 4
+#define MAX_CARACTERES 100
+
+int V;
 
 typedef struct {
     int origem, destino, peso;
@@ -169,6 +171,7 @@ int main() {
     int cont = 0, raiz;
     // variavel pra guardar o nome do arquivo
     char nomeArquivo[100]; 
+    char linha[MAX_CARACTERES];
     // verificador que falará se o código continuará em loop
     int continuar = 1;
 
@@ -184,16 +187,26 @@ int main() {
         // ponteiro apontando para o arquivo
         FILE *file = fopen(nomeArquivo, "r");
 
-        
+        fgets(linha, MAX_CARACTERES, file) != NULL;
+        // Remova o caractere de nova linha (se existir)
+
+        // Divida o comprimento da linha por 2
+        int comprimento = strlen(linha);
+        V = ceil((float)(comprimento / 2));
 
         if (file == NULL) {
             perror("Erro ao abrir o arquivo");
             return -1;
         }
 
+        fclose(file);
+
+        file = fopen(nomeArquivo, "r");
+
         int graph[V][V];
 
         // calculando a quantidade de vertices
+        int cont = 0;
         for (int i = 0; i < V; i++) {
             for (int j = 0; j < V; j++) {
                 fscanf(file, "%d", &graph[i][j]);
@@ -201,32 +214,34 @@ int main() {
             }
         }
 
+        printf("\n");
+
         raiz = sqrt(cont);
 
         fclose(file);
 
-    // lista para mapear todas as arestas do grafo
-    Aresta *listaTodasArestas = (Aresta *)calloc(V * (V - 1) / 2, sizeof(Aresta));
-    // lista para mapear todas da arvore minima do grafo
-    Aresta *listaArestasMST = (Aresta *)calloc(V - 1, sizeof(Aresta));
+        // lista para mapear todas as arestas do grafo
+        Aresta *listaTodasArestas = (Aresta *)calloc(V * (V - 1) / 2, sizeof(Aresta));
+        // lista para mapear todas da arvore minima do grafo
+        Aresta *listaArestasMST = (Aresta *)calloc(V - 1, sizeof(Aresta));
 
-    if (listaTodasArestas == NULL || listaArestasMST == NULL) {
-        fprintf(stderr, "Erro na alocação de memória.\n");
-        exit(EXIT_FAILURE);
-    }
+        if (listaTodasArestas == NULL || listaArestasMST == NULL) {
+            fprintf(stderr, "Erro na alocação de memória.\n");
+            exit(EXIT_FAILURE);
+        }
 
-    // Chama a função para imprimir as arestas da MST e todas as arestas do grafo
-    primMST(graph, listaTodasArestas, listaArestasMST);
+        // Chama a função para imprimir as arestas da MST e todas as arestas do grafo
+        primMST(graph, listaTodasArestas, listaArestasMST);
 
-    int tamanhoArestasNaoMST;
-    Aresta* listaArestasNaoMST = arestasNaoMST(listaTodasArestas, V * (V - 1) / 2, listaArestasMST, V - 1, &tamanhoArestasNaoMST);
+        int tamanhoArestasNaoMST;
+        Aresta* listaArestasNaoMST = arestasNaoMST(listaTodasArestas, V * (V - 1) / 2, listaArestasMST, V - 1, &tamanhoArestasNaoMST);
 
-    printArestaLista(listaArestasNaoMST, tamanhoArestasNaoMST, "\nArestas que nao estao na Arvore Geradora Minima:");
+        printArestaLista(listaArestasNaoMST, tamanhoArestasNaoMST, "\nArestas que nao estao na Arvore Geradora Minima:");
 
-    // Libera a memória alocada
-    free(listaTodasArestas);
-    free(listaArestasMST);
-    free(listaArestasNaoMST);
+        // Libera a memória alocada
+        free(listaTodasArestas);
+        free(listaArestasMST);
+        free(listaArestasNaoMST);
 
         printf("Deseja continuar? (1 para sim, 0 para sair): ");
         scanf("%d", &continuar);
