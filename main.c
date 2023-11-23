@@ -77,7 +77,7 @@ void printArestaLista(Aresta *listaArestas, int tamanho, const char *titulo) {
     printf("%s\n", titulo);
     printf("Edge \tWeight\n");
     for (int i = 0; i < tamanho; i++) {
-        printf("%d - %d \t%d \n", listaArestas[i].origem, listaArestas[i].destino, listaArestas[i].peso);
+        printf("%d - %d \t%d \n", listaArestas[i].origem + 1, listaArestas[i].destino + 1, listaArestas[i].peso);
     }
 }
 
